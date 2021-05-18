@@ -37,6 +37,7 @@ dependencies:
   timeago: 3.0.2
   cached_network_image:
   flutter_svg:
+  firebase_core: ^1.2.0
 
 
   # The following adds the Cupertino Icons font to your application.

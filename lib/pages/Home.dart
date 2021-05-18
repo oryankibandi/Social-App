@@ -80,25 +80,26 @@ class _HomeState extends State<Home> {
 
   //function to change page when bottom nav bar is tapped
   onTap(int index) {
-    pageController.jumpToPage(index);
+    pageController.animateToPage(index,
+        curve: Curves.easeInOut, duration: Duration(milliseconds: 200));
   }
 
   Scaffold buildAuthScreen() {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.add_ic_call_sharp,
-              color: Theme.of(context).accentColor,
-            ),
-            onPressed: () {
-              print('call');
-            },
-          )
-        ],
-        title: Text('UniShare'),
-      ),
+      // appBar: AppBar(
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(
+      //         Icons.add_ic_call_sharp,
+      //         color: Theme.of(context).accentColor,
+      //       ),
+      //       onPressed: () {
+      //         print('call');
+      //       },
+      //     )
+      //   ],
+      //   title: Text('UniShare'),
+      // ),
       body: PageView(
         children: [Timescale(), ActivityFeed(), Upload(), Search(), Profile()],
         controller: pageController,
