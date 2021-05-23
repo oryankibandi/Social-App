@@ -16,14 +16,17 @@ class Timescale extends StatefulWidget {
 class _TimescaleState extends State<Timescale> {
   void initState() {
     super.initState();
-    //getUsers();
-    getUserById();
+    getUsers();
+    // getUserById();
     print('done');
   }
 
 //function to get users from users collection and print
   Future getUsers() async {
-    QuerySnapshot querysnapshot = await usersRef.get();
+    QuerySnapshot querysnapshot = await usersRef
+        .where("isAdmin", isEqualTo: false)
+        .where("username", isEqualTo: "ben")
+        .get();
     querysnapshot.docs.forEach((doc) {
       print(doc.data());
     });
