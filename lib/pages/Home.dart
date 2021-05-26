@@ -1,15 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:unishare/pages/ActivityFeed.dart';
+import 'package:unishare/pages/CreateAccount.dart';
 import 'package:unishare/pages/Profile.dart';
 import 'package:unishare/pages/Search.dart';
 import 'package:unishare/pages/Timescale.dart';
 import 'package:unishare/pages/Upload.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final usersRef = FirebaseFirestore.instance.collection('users');
+final timestamp = DateTime.now();
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -47,8 +51,9 @@ class _HomeState extends State<Home> {
   }
 
   //function to handle sign in and change isAuth state
-  handleLogIn(GoogleSignInAccount account) {
+  handleLogIn(GoogleSignInAccount account) async {
     if (account != null) {
+      await createUserInFirebase(account);
       print(account);
       setState(() {
         isAuth = true;
@@ -56,6 +61,27 @@ class _HomeState extends State<Home> {
     } else {
       setState(() {
         isAuth = false;
+      });
+    }
+  }
+
+  createUserInFirebase(GoogleSignInAccount account) async {
+    //1) check if user exists in firebase
+    //2) if user doesnt exist, take them to create account page
+    //3) get username from create account and use it to create a doc in firebase
+    final GoogleSignInAccount user = googleSignIn.currentUser;
+    final DocumentSnapshot doc = await usersRef.doc(user.id).get();
+    if (!doc.exists) {
+      final username = await Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => CreateAccount()));
+      usersRef.doc(user.id).set({
+        "id": user.id,
+        "username": username,
+        "photoUrl": user.photoUrl,
+        "email": user.email,
+        "displayName": user.displayName,
+        "bio": "",
+        "timestamp": timestamp,
       });
     }
   }

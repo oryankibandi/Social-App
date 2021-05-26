@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:unishare/pages/Home.dart';
 
 import 'package:unishare/widgets/Header.dart';
-import 'package:unishare/widgets/progress.dart';
 
 //initialized usersRef as the colection
 final usersRef = FirebaseFirestore.instance.collection('users');
@@ -16,7 +16,7 @@ class Timescale extends StatefulWidget {
 class _TimescaleState extends State<Timescale> {
   void initState() {
     super.initState();
-    deleteUser();
+    // deleteUser();
     // getUsers();
     // getUserById();
     // print('done');
@@ -69,30 +69,44 @@ class _TimescaleState extends State<Timescale> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: header(context, 'Unishare', 50.0, 'Signatra'),
-        body: StreamBuilder(
-          stream: usersRef.snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return circularProgress();
-            }
-            final List<ListTile> children = snapshot.data.docs
-                .map<ListTile>((doc) => ListTile(
-                      leading: Icon(Icons.account_circle),
-                      tileColor: Colors.purple[300],
-                      title: Text(
-                        doc['username'],
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      contentPadding: EdgeInsets.all(5.0),
-                    ))
-                .toList();
-            return Container(
-              child: ListView(
-                children: children,
-              ),
-            );
-          },
-        ));
+      appBar: header(context, 'Unishare', 50.0, 'Signatra'),
+      body: Center(
+          child: Container(
+        child: ElevatedButton(
+          onPressed: () => googleSignIn.signOut(),
+          child: Text(
+            'Log Out',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        width: 350,
+        height: 50,
+        color: Theme.of(context).primaryColor,
+      )),
+      // StreamBuilder(
+      //   stream: usersRef.snapshots(),
+      //   builder: (context, snapshot) {
+      //     if (!snapshot.hasData) {
+      //       return circularProgress();
+      //     }
+      //     final List<ListTile> children = snapshot.data.docs
+      //         .map<ListTile>((doc) => ListTile(
+      //               leading: Icon(Icons.account_circle),
+      //               tileColor: Colors.purple[300],
+      //               title: Text(
+      //                 doc['username'],
+      //                 style: TextStyle(color: Colors.white, fontSize: 20),
+      //               ),
+      //               contentPadding: EdgeInsets.all(5.0),
+      //             ))
+      //         .toList();
+      //     return Container(
+      //       child: ListView(
+      //         children: children,
+      //       ),
+      //     );
+      //   },
+      // )
+    );
   }
 }
