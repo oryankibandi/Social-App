@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:unishare/widgets/Header.dart';
 
@@ -11,10 +13,18 @@ class CreateAccount extends StatefulWidget {
 class _CreateAccountState extends State<CreateAccount> {
   String username;
   final _formKey = GlobalKey<FormState>();
+  // final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   submit() {
-    _formKey.currentState.save();
-    Navigator.of(context).pop(username);
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+
+      SnackBar snackBar = SnackBar(content: Text('Welcome $username'));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      Timer(Duration(seconds: 2), () {
+        Navigator.of(context).pop(username);
+      });
+    }
   }
 
   @override
@@ -48,8 +58,10 @@ class _CreateAccountState extends State<CreateAccount> {
                             labelStyle: TextStyle(fontSize: 15.0),
                             hintText: "Username must be atleast 3 characters"),
                         validator: (value) {
-                          if (value.length < 3) {
+                          if (value.trim().length < 3 || value.isEmpty) {
                             return 'Characters cannot be less than 3';
+                          } else if (value.trim().length > 12) {
+                            return 'username cannot be longer than 12 characters';
                           }
                           return null;
                         },

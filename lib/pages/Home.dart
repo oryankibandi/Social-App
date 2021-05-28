@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:unishare/models/User.dart';
 
 import 'package:unishare/pages/ActivityFeed.dart';
 import 'package:unishare/pages/CreateAccount.dart';
@@ -14,6 +15,7 @@ import 'package:unishare/pages/Upload.dart';
 final GoogleSignIn googleSignIn = GoogleSignIn();
 final usersRef = FirebaseFirestore.instance.collection('users');
 final timestamp = DateTime.now();
+User currentUser;
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);
@@ -70,7 +72,7 @@ class _HomeState extends State<Home> {
     //2) if user doesnt exist, take them to create account page
     //3) get username from create account and use it to create a doc in firebase
     final GoogleSignInAccount user = googleSignIn.currentUser;
-    final DocumentSnapshot doc = await usersRef.doc(user.id).get();
+    DocumentSnapshot doc = await usersRef.doc(user.id).get();
     if (!doc.exists) {
       final username = await Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => CreateAccount()));
@@ -83,7 +85,12 @@ class _HomeState extends State<Home> {
         "bio": "",
         "timestamp": timestamp,
       });
+      doc = await usersRef.doc(user.id).get();
     }
+
+    currentUser = User.fromDocument(doc);
+    print('current user: $currentUser');
+    print('current user username: ${currentUser.username}');
   }
 
   //sign out our users
