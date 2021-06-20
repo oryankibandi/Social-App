@@ -134,7 +134,13 @@ class _HomeState extends State<Home> {
       //   title: Text('UniShare'),
       // ),
       body: PageView(
-        children: [Timescale(), ActivityFeed(), Upload(), Search(), Profile()],
+        children: [
+          Timescale(),
+          ActivityFeed(),
+          Upload(currentUser: currentUser),
+          Search(),
+          Profile()
+        ],
         controller: pageController,
         onPageChanged: onPageChanged,
         physics: NeverScrollableScrollPhysics(),
